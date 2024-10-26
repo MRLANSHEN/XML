@@ -113,7 +113,7 @@ std::string contents__(std::string contents)
 	remove("add_all_cbb");
 	return contents;
 }
-//类
+//主类
 class  XML
 {
 public:
@@ -124,8 +124,15 @@ public:
 	string OPENXML(string DAD_CLASSNAME,string ID, string YUAN);	
 	void OUTXML_CLASS(const string DAD_CLASSNAME, string CLASSNAME);
 	void OUTXML_CLASS(const string DAD_CLASSNAME,const string DAD_ID, const string CLASSNAME);
+	void OUTXML_CLASS(const string DAD_CLASSNAME, const string CLASS_ID_NAME, const string CLASS_ID, const string CLASSNAME);
+	void OUTXML_CLASS(const string DAD_CLASSNAME, const string DAD_ID, const string CLASS_ID_NAME, const string CLASS_ID,const string CLASSNAME);
 	void OUTXML_SHUXING(const string DAD_CLASSNAME, const string SHUXINGNAME, const string SHUXING);
 	void OUTXML_SHUXING(const string DAD_CLASSNAME, const string DAD_ID, const string SHUXINGNAME, const string SHUXING);
+	void OUTXML_SHUXING(const string DAD_CLASSNAME, const string SHUXINGNAME, const string SHUXING_ID_NAME, const string SHUXING_ID, const string SHUXING);
+	void OUTXML_SHUXING(const string DAD_CLASSNAME, const string DAD_ID, const string SHUXINGNAME,const string SHUXING_ID_NAME,const string SHUXING_ID, const string SHUXING);
+	void OUTXML_DELETE(const string YUANNAME);
+	void OUTXML_DELETE(const string DAD_CLASSNAME,const string YUANNAME);
+	void OUTXML_DELETE(const string DAD_CLASSNAME, const string DAD_ID, const string YUANNAME);
 	bool IS_OUT_IN() const;
 private:
 	bool true_OR_false=true;
@@ -358,7 +365,7 @@ void XML::OUTXML_CLASS(const string DAD_CLASSNAME, const string DAD_ID, const st
 	while (!OPEN_IN_OUT.eof())
 	{
 	a1:
-		if (!OPEN_IN_OUT.eof())
+		if (OPEN_IN_OUT.eof())
 		{
 			true_OR_false = false;
 			return ;
@@ -443,6 +450,157 @@ void XML::OUTXML_CLASS(const string DAD_CLASSNAME, const string DAD_ID, const st
 	true_OR_false = true;
 	RET;
 }
+//通过父类向XML文件写入一个带编号的类
+void XML::OUTXML_CLASS(const string DAD_CLASSNAME, const string CLASS_ID_NAME, const string CLASS_ID, const string CLASSNAME)
+{
+	fstream OPEN_IN_OUT(路径);
+	string CLASS;
+	short int c = 0;
+	short int a = 0;
+	while (!OPEN_IN_OUT.eof())
+	{
+		getline(OPEN_IN_OUT, CLASS, '<');
+		getline(OPEN_IN_OUT, CLASS, '>');
+		c++;
+		for (short int i = 0; i < DAD_CLASSNAME.size(); i++)
+		{
+			if (CLASS[i] == DAD_CLASSNAME[i])
+				a++;
+			else
+				a = 0;
+		}
+		if (a == DAD_CLASSNAME.size())
+		{
+			break;
+		}
+	}
+	if (OPEN_IN_OUT.eof())
+	{
+		true_OR_false = false;
+		RET;
+	}
+	OPEN_IN_OUT.close();
+	ifstream IN(路径);
+	ofstream OUT;
+	OUT.open(contents_(路径) + "/add__LAN" + ".xml");
+	short int c_ = 0;
+	while (c_ != c)
+	{
+		getline(IN, CLASS, '<');
+		OUT << CLASS << '<';
+		getline(IN, CLASS, '>');
+		OUT << CLASS << '>';
+		c_++;
+	}
+	OUT << endl << '<' << CLASSNAME<<' '<<CLASS_ID_NAME<<'='<<'"'<<CLASS_ID<<'"' << '>' << endl << '<' << '/' << CLASSNAME << '>';
+	while (getline(IN, CLASS))
+	{
+		OUT << CLASS << endl;
+	}
+	OUT.close();
+	IN.close();
+	string name = contents_name(路径);
+	remove(路径.c_str());
+	rename("add__LAN.xml", name.c_str());
+
+	true_OR_false = true;
+	RET;
+}
+//通过父类和父类ID值向XML文件写入一个带编号的类
+void XML::OUTXML_CLASS(const string DAD_CLASSNAME, const string DAD_ID, const string CLASS_ID_NAME, const string CLASS_ID, const string CLASSNAME)
+{
+	fstream OPEN_IN_OUT(路径);
+	string CLASS;
+	short int c = 0;
+	short int a = 0;
+	while (!OPEN_IN_OUT.eof())
+	{
+	a1:
+		if (OPEN_IN_OUT.eof())
+		{
+			true_OR_false = false;
+			return;
+		}
+		getline(OPEN_IN_OUT, CLASS, '<');
+		getline(OPEN_IN_OUT, CLASS, '>');
+		c++;
+		if (CLASS.size() < DAD_CLASSNAME.size() + DAD_ID.size())
+		{
+			goto a1;
+		}
+		for (short int i = 0; i < DAD_CLASSNAME.size(); i++)
+		{
+			if (CLASS[i] == DAD_CLASSNAME[i])
+				a++;
+			else
+				a = 0;
+		}
+		cout << a << "\t" << DAD_CLASSNAME.size() << endl;
+		if (a == DAD_CLASSNAME.size())
+		{
+			break;
+		}
+	}
+	if (OPEN_IN_OUT.eof())
+	{
+		true_OR_false = false;
+		RET;
+	}
+	if (CLASS.size() < DAD_ID.size())
+	{
+		goto a1;
+	}
+	for (short int i = 0; i < CLASS.size(); i++) {
+		if (CLASS[i] == '"') {
+			short int ass = 0;
+			short int i_p = i + 1;
+			for (short int z = 0; z < DAD_ID.size(); z++) {
+				cout << CLASS[i_p] << "\t" << DAD_ID[z] << endl;
+				if (CLASS[i_p] == DAD_ID[z]) {
+					ass++;
+				}
+				else
+				{
+					cout << ass << "\t" << DAD_ID.size() << endl;
+					goto a1;
+				}
+				i_p++;
+			}
+			if (ass == DAD_ID.size())
+			{
+				goto a2;
+			}
+		}
+	}
+	goto a1;
+a2:
+	OPEN_IN_OUT.close();
+	ifstream IN(路径);
+	ofstream OUT;
+	OUT.open(contents_(路径) + "/add__LAN" + ".xml");
+	short int c_ = 0;
+	while (c_ != c)
+	{
+		getline(IN, CLASS, '<');
+		OUT << CLASS << '<';
+		getline(IN, CLASS, '>');
+		OUT << CLASS << '>';
+		c_++;
+	}
+	OUT << endl << '<' << CLASSNAME<<' '<<CLASS_ID_NAME<<'='<<'"'<<CLASS_ID<<'"' << '>' << endl << '<' << '/' << CLASSNAME << '>';
+	while (getline(IN, CLASS))
+	{
+		OUT << CLASS << endl;
+	}
+	OUT.close();
+	IN.close();
+	string name = contents_name(路径);
+	remove(路径.c_str());
+	rename("add__LAN.xml", name.c_str());
+
+	true_OR_false = true;
+	RET;
+}
 //向父类写入一个带参数的内容
 void XML::OUTXML_SHUXING(const string DAD_CLASSNAME, const string SHUXINGNAME, const string SHUXING)
 {
@@ -501,7 +659,7 @@ void XML::OUTXML_SHUXING(const string DAD_CLASSNAME, const string SHUXINGNAME, c
 	
 }
 //向带编号的父类写一个带参数的内容
-void XML::OUTXML_SHUXING(const string DAD_CLASSNAME, const string DAD_ID, const string SHUXINGNAME, const string SHUXING)
+void XML::OUTXML_SHUXING(const string DAD_CLASSNAME, const string DAD_ID, const string SHUXINGNAME, const string SHUXING)      
 {
 	fstream OPEN_IN_OUT(路径);
 	string CLASS;
@@ -595,3 +753,503 @@ a2:
 	true_OR_false = true;
 	RET;
 }
+//向父类写入一个带编号与参数的内容
+void XML::OUTXML_SHUXING(const string DAD_CLASSNAME, const string SHUXINGNAME, const string SHUXING_ID_NAME, const string SHUXING_ID, const string SHUXING)
+
+{
+	fstream OPEN_IN_OUT(路径);
+	string CLASS;
+	short int c = 0;
+	short int a = 0;
+	while (!OPEN_IN_OUT.eof())
+	{
+		getline(OPEN_IN_OUT, CLASS, '<');
+		getline(OPEN_IN_OUT, CLASS, '>');
+		c++;
+		for (short int i = 0; i < DAD_CLASSNAME.size(); i++)
+		{
+			if (CLASS[i] == DAD_CLASSNAME[i])
+				a++;
+			else
+				a = 0;
+		}
+		if (a == DAD_CLASSNAME.size())
+		{
+			break;
+		}
+	}
+	if (OPEN_IN_OUT.eof())
+	{
+		true_OR_false = false;
+		RET;
+	}
+	OPEN_IN_OUT.close();
+	ifstream IN(路径);
+	ofstream OUT;
+	OUT.open(contents_(路径) + "/add__LAN" + ".xml");
+	short int c_ = 0;
+	while (c_ != c)
+	{
+		getline(IN, CLASS, '<');
+		OUT << CLASS << '<';
+		getline(IN, CLASS, '>');
+		OUT << CLASS << '>';
+		c_++;
+	}
+	OUT << endl << '<' << SHUXINGNAME <<' '<<SHUXING_ID_NAME<<'='<<'"'<<SHUXING_ID<<'"' << '>' << SHUXING << '<' << '/' << SHUXINGNAME << '>';
+	while (getline(IN, CLASS))
+	{
+		OUT << CLASS << endl;
+	}
+	OUT.close();
+	IN.close();
+	string name = contents_name(路径);
+	remove(路径.c_str());
+	rename("add__LAN.xml", name.c_str());
+
+	true_OR_false = true;
+	RET;
+
+}
+//向带编号的父类写一个带编号与参数的内容
+void XML::OUTXML_SHUXING(const string DAD_CLASSNAME, const string DAD_ID, const string SHUXINGNAME, const string SHUXING_ID_NAME, const string SHUXING_ID, const string SHUXING)
+{
+	fstream OPEN_IN_OUT(路径);
+	string CLASS;
+	short int c = 0;
+	short int a = 0;
+	while (!OPEN_IN_OUT.eof())
+	{
+	a1:
+		if (OPEN_IN_OUT.eof())
+		{
+			true_OR_false = false;
+			return;
+		}
+		getline(OPEN_IN_OUT, CLASS, '<');
+		getline(OPEN_IN_OUT, CLASS, '>');
+		c++;
+		if (CLASS.size() < DAD_CLASSNAME.size() + DAD_ID.size())
+		{
+			goto a1;
+		}
+		for (short int i = 0; i < DAD_CLASSNAME.size(); i++)
+		{
+			if (CLASS[i] == DAD_CLASSNAME[i])
+				a++;
+			else
+				a = 0;
+		}
+		cout << a << "\t" << DAD_CLASSNAME.size() << endl;
+		if (a == DAD_CLASSNAME.size())
+		{
+			break;
+		}
+	}
+	if (OPEN_IN_OUT.eof())
+	{
+		true_OR_false = false;
+		RET;
+	}
+	if (CLASS.size() < DAD_ID.size())
+	{
+		goto a1;
+	}
+	for (short int i = 0; i < CLASS.size(); i++) {
+		if (CLASS[i] == '"') {
+			short int ass = 0;
+			short int i_p = i + 1;
+			for (short int z = 0; z < DAD_ID.size(); z++) {
+				cout << CLASS[i_p] << "\t" << DAD_ID[z] << endl;
+				if (CLASS[i_p] == DAD_ID[z]) {
+					ass++;
+				}
+				else
+				{
+					cout << ass << "\t" << DAD_ID.size() << endl;
+					goto a1;
+				}
+				i_p++;
+			}
+			if (ass == DAD_ID.size())
+			{
+				goto a2;
+			}
+		}
+	}
+	goto a1;
+a2:
+	OPEN_IN_OUT.close();
+	ifstream IN(路径);
+	ofstream OUT;
+	OUT.open(contents_(路径) + "/add__LAN" + ".xml");
+	short int c_ = 0;
+	while (c_ != c)
+	{
+		getline(IN, CLASS, '<');
+		OUT << CLASS << '<';
+		getline(IN, CLASS, '>');
+		OUT << CLASS << '>';
+		c_++;
+	}
+	OUT << endl << '<' << SHUXINGNAME<<' '<<SHUXING_ID_NAME<<'='<<'"'<<SHUXING_ID<<'"' << '>' << SHUXING << '<' << '/' << SHUXINGNAME << '>';
+	while (getline(IN, CLASS))
+	{
+		OUT << CLASS << endl;
+	}
+	OUT.close();
+	IN.close();
+	string name = contents_name(路径);
+	remove(路径.c_str());
+	rename("add__LAN.xml", name.c_str());
+
+	true_OR_false = true;
+	RET;
+}
+//删掉离文件头最近的内容(元素/类}
+void XML::OUTXML_DELETE(const string YUANNAME)
+{
+	ifstream IN(路径);
+	string NAME;
+	short int c_ = 0;
+	short int c=0;
+	bool cccc=false;
+	while (!IN.eof())
+	{
+		getline(IN, NAME, '<');
+		getline(IN, NAME, '>');
+		c++;
+		if (cccc == false)
+		{
+			if (NAME.size() < YUANNAME.size())
+			{
+				continue;
+			}
+			short int OHYES = 0;
+			for (short int i = 0; i < YUANNAME.size(); i++)
+			{
+				if (NAME[i] == YUANNAME[i])
+				{
+					OHYES++;
+				}
+			}
+			if (OHYES == YUANNAME.size())
+			{
+				c_ = c;
+				cccc = true;
+			}
+		}
+		else
+		{
+			if (NAME=='/'+YUANNAME)
+			{
+				break;
+			}
+		}
+	}
+	if (IN.eof())
+	{
+		true_OR_false = false;
+		return;
+	}
+	IN.close();
+	IN.open(路径);
+	short int _c = 0;
+	ofstream OUT;
+	OUT.open(contents_(路径) + "/add__LAN" + ".xml",ios::out);
+	bool xxx = false;
+	while (!IN.eof())
+	{
+		_c++;
+		if (_c - 1 == c)
+		{
+			while (getline(IN, NAME))
+			{
+				OUT << NAME<<endl;
+			}
+			break;
+		}
+		if (_c == c_)
+		{
+			xxx = true;
+		}
+		if (getline(IN, NAME, '<')) {
+			if (xxx == false)
+				OUT << NAME << '<';
+		}
+		if (getline(IN, NAME, '>'))
+		{
+			if (xxx == false)
+				OUT << NAME << '>';
+		}
+		
+	}
+	OUT.close();
+	IN.close();
+	string name = contents_name(路径);
+	remove(路径.c_str());
+	rename("add__LAN.xml", name.c_str());
+	true_OR_false = true;
+}
+//删掉离类头最近的内容(元素/类}
+void XML::OUTXML_DELETE(const string DAD_CLASSNAME, const string YUANNAME)
+
+{
+	ifstream IN(路径);
+	string NAME;
+	short int c_ = 0;
+	short int c = 0;
+	bool cccc = false;
+	while (!IN.eof())
+	{
+		getline(IN, NAME, '<');
+		getline(IN, NAME, '>');
+		c++;
+		if (NAME>=DAD_CLASSNAME)
+		{
+			int o = 0;
+			for (short int i = 0; i < DAD_CLASSNAME.size(); i++)
+			{
+				if (NAME[i]==DAD_CLASSNAME[i])
+				{
+					o++;
+				}
+			}
+			if (o==DAD_CLASSNAME.size())
+			{
+				break;
+			}
+		}
+	}if (IN.eof())
+	{
+		true_OR_false = false;
+		return;
+	}
+	while (!IN.eof())
+	{
+		getline(IN, NAME, '<');
+		getline(IN, NAME, '>');
+		c++;
+		if (cccc == false)
+		{
+			if (NAME.size() < YUANNAME.size())
+			{
+				continue;
+			}
+			short int OHYES = 0;
+			for (short int i = 0; i < YUANNAME.size(); i++)
+			{
+				if (NAME[i] == YUANNAME[i])
+				{
+					OHYES++;
+				}
+			}
+			if (OHYES == YUANNAME.size())
+			{
+				c_ = c;
+				cccc = true;
+			}
+		}
+		else
+		{
+			if (NAME == '/' + YUANNAME)
+			{
+				break;
+			}
+		}
+	}
+	if (IN.eof())
+	{
+		true_OR_false = false;
+		return;
+	}
+	IN.close();
+	IN.open(路径);
+	short int _c = 0;
+	ofstream OUT;
+	OUT.open(contents_(路径) + "/add__LAN" + ".xml", ios::out);
+	bool xxx = false;
+	while (!IN.eof())
+	{
+		_c++;
+		if (_c - 1 == c)
+		{
+			while (getline(IN, NAME))
+			{
+				OUT << NAME << endl;
+			}
+			break;
+		}
+		if (_c == c_)
+		{
+			xxx = true;
+		}
+		if (getline(IN, NAME, '<')) {
+			if (xxx == false)
+				OUT << NAME << '<';
+		}
+		if (getline(IN, NAME, '>'))
+		{
+			if (xxx == false)
+				OUT << NAME << '>';
+		}
+
+	}
+	OUT.close();
+	IN.close();
+	string name = contents_name(路径);
+	remove(路径.c_str());
+	rename("add__LAN.xml", name.c_str());
+	true_OR_false = true;
+}
+//删掉离带编号头距离最近的内容(元素/类}
+void XML::OUTXML_DELETE(const string DAD_CLASSNAME,const string DAD_ID, const string YUANNAME)
+
+{
+	ifstream IN(路径);
+	string NAME;
+	short int c_ = 0;
+	short int c = 0;
+	bool cccc = false;
+	while (!IN.eof())
+	{a1:
+		getline(IN, NAME, '<');
+		getline(IN, NAME, '>');
+		c++;
+		if (NAME.size() > DAD_CLASSNAME.size()+DAD_ID.size())
+		{
+			int o = 0;
+			for (short int i = 0; i < DAD_CLASSNAME.size(); i++)
+			{
+				if (NAME[i] == DAD_CLASSNAME[i])
+				{
+					o++;
+				}
+			}
+			if (o == DAD_CLASSNAME.size())
+			{
+				break;
+			}
+		}
+	}if (IN.eof())
+	{
+		true_OR_false = false;
+		return;
+	}
+	short p = 0;
+	for (short int i = 0; i < NAME.size(); i++)
+	{
+		if (NAME[i]=='"')
+		{
+			for (short int z = i+1; z < NAME.size(); z++)
+			{
+				if (NAME[z] != '"') {
+					p++;
+				}
+				else if(NAME[z]=='"')
+				{
+					if (p==DAD_ID.size())
+					{
+						p = 0;
+						for (short int xxs = i + 1; xxs < NAME.size(); xxs++)
+						{
+							if (NAME[xxs]==DAD_ID[p])
+							{
+								p++;
+							}
+						}
+						if (p==DAD_ID.size())
+						{
+							goto a2;
+						}
+					}
+				}
+			}
+		}
+	}a2:
+	if (p!=DAD_ID.size())
+	{
+		goto a1;
+	}
+	while (!IN.eof())
+	{
+		getline(IN, NAME, '<');
+		getline(IN, NAME, '>');
+		c++; 
+		if (NAME=='/'+DAD_CLASSNAME)
+		{
+			goto a1;
+		}
+		if (cccc == false)
+		{
+			if (NAME.size() < YUANNAME.size())
+			{
+				continue;
+			}
+			short int OHYES = 0;
+			for (short int i = 0; i < YUANNAME.size(); i++)
+			{
+				if (NAME[i] == YUANNAME[i])
+				{
+					OHYES++;
+				}
+			}
+			if (OHYES == YUANNAME.size())
+			{
+				c_ = c;
+				cccc = true;
+			}
+		}
+		else
+		{
+			if (NAME == '/' + YUANNAME)
+			{
+				break;
+			}
+		}
+	}
+	if (IN.eof())
+	{
+		true_OR_false = false;
+		return;
+	}
+	IN.close();
+	IN.open(路径);
+	short int _c = 0;
+	ofstream OUT;
+	OUT.open(contents_(路径) + "/add__LAN" + ".xml", ios::out);
+	bool xxx = false;
+	while (!IN.eof())
+	{
+		_c++;
+		if (_c - 1 == c)
+		{
+			while (getline(IN, NAME))
+			{
+				OUT << NAME << endl;
+			}
+			break;
+		}
+		if (_c == c_)
+		{
+			xxx = true;
+		}
+		if (getline(IN, NAME, '<')) {
+			if (xxx == false)
+				OUT << NAME << '<';
+		}
+		if (getline(IN, NAME, '>'))
+		{
+			if (xxx == false)
+				OUT << NAME << '>';
+		}
+
+	}
+	OUT.close();
+	IN.close();
+	string name = contents_name(路径);
+	remove(路径.c_str());
+	rename("add__LAN.xml", name.c_str());
+	true_OR_false = true;
+}
+
