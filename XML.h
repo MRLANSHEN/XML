@@ -133,6 +133,7 @@ public:
 	void OUTXML_DELETE(const string YUANNAME);
 	void OUTXML_DELETE(const string DAD_CLASSNAME,const string YUANNAME);
 	void OUTXML_DELETE(const string DAD_CLASSNAME, const string DAD_ID, const string YUANNAME);
+	void OUTXML_DELETE_ID(const string YUANNAME, const string YUANNAME_ID);
 	bool IS_OUT_IN() const;
 private:
 	bool true_OR_false=true;
@@ -377,6 +378,7 @@ void XML::OUTXML_CLASS(const string DAD_CLASSNAME, const string DAD_ID, const st
 		{
 			goto a1;
 		}
+		a = 0;
 		for (short int i = 0; i < DAD_CLASSNAME.size(); i++)
 		{
 			if (CLASS[i] == DAD_CLASSNAME[i])
@@ -384,7 +386,6 @@ void XML::OUTXML_CLASS(const string DAD_CLASSNAME, const string DAD_ID, const st
 			else
 				a = 0;
 		}
-		cout << a << "\t" << DAD_CLASSNAME.size() << endl;
 		if (a == DAD_CLASSNAME.size())
 		{
 			break;
@@ -397,20 +398,19 @@ void XML::OUTXML_CLASS(const string DAD_CLASSNAME, const string DAD_ID, const st
 	}
 	if (CLASS.size()<DAD_ID.size())
 	{
+		a = 0;
 		goto a1;
 	}
-	for (short int i = 0; i < CLASS.size(); i++)	{
+	for (short int i = a; i < CLASS.size(); i++)	{
 		if (CLASS[i] == '"') {
 			short int ass = 0;
 			short int i_p = i+1 ;
 			for (short int z = 0; z < DAD_ID.size(); z++){
-				cout << CLASS[i_p] << "\t" << DAD_ID[z] << endl;
 				if (CLASS[i_p]==DAD_ID[z]){
 					ass++;
 				}
 				else
 				{
-					cout << ass << "\t" << DAD_ID.size() << endl;
 					goto a1;
 				}
 				i_p++;
@@ -462,6 +462,10 @@ void XML::OUTXML_CLASS(const string DAD_CLASSNAME, const string CLASS_ID_NAME, c
 		getline(OPEN_IN_OUT, CLASS, '<');
 		getline(OPEN_IN_OUT, CLASS, '>');
 		c++;
+		if (DAD_CLASSNAME.size()>CLASS.size())
+		{
+			continue;
+		}
 		for (short int i = 0; i < DAD_CLASSNAME.size(); i++)
 		{
 			if (CLASS[i] == DAD_CLASSNAME[i])
@@ -528,6 +532,7 @@ void XML::OUTXML_CLASS(const string DAD_CLASSNAME, const string DAD_ID, const st
 		{
 			goto a1;
 		}
+		a = 0;
 		for (short int i = 0; i < DAD_CLASSNAME.size(); i++)
 		{
 			if (CLASS[i] == DAD_CLASSNAME[i])
@@ -535,7 +540,6 @@ void XML::OUTXML_CLASS(const string DAD_CLASSNAME, const string DAD_ID, const st
 			else
 				a = 0;
 		}
-		cout << a << "\t" << DAD_CLASSNAME.size() << endl;
 		if (a == DAD_CLASSNAME.size())
 		{
 			break;
@@ -550,18 +554,16 @@ void XML::OUTXML_CLASS(const string DAD_CLASSNAME, const string DAD_ID, const st
 	{
 		goto a1;
 	}
-	for (short int i = 0; i < CLASS.size(); i++) {
+	for (short int i = a; i < CLASS.size(); i++) {
 		if (CLASS[i] == '"') {
 			short int ass = 0;
 			short int i_p = i + 1;
 			for (short int z = 0; z < DAD_ID.size(); z++) {
-				cout << CLASS[i_p] << "\t" << DAD_ID[z] << endl;
 				if (CLASS[i_p] == DAD_ID[z]) {
 					ass++;
 				}
 				else
 				{
-					cout << ass << "\t" << DAD_ID.size() << endl;
 					goto a1;
 				}
 				i_p++;
@@ -613,6 +615,8 @@ void XML::OUTXML_SHUXING(const string DAD_CLASSNAME, const string SHUXINGNAME, c
 			getline(OPEN_IN_OUT, CLASS, '<');
 			getline(OPEN_IN_OUT, CLASS, '>');
 			c++;
+			if (CLASS.size() < DAD_CLASSNAME.size())
+				continue;
 			for (short int i = 0; i < DAD_CLASSNAME.size(); i++)
 			{
 				if (CLASS[i] == DAD_CLASSNAME[i])
@@ -668,7 +672,7 @@ void XML::OUTXML_SHUXING(const string DAD_CLASSNAME, const string DAD_ID, const 
 	while (!OPEN_IN_OUT.eof())
 	{
 	a1:
-		if (!OPEN_IN_OUT.eof())
+		if (OPEN_IN_OUT.eof())
 		{
 			true_OR_false = false;
 			return;
@@ -680,6 +684,7 @@ void XML::OUTXML_SHUXING(const string DAD_CLASSNAME, const string DAD_ID, const 
 		{
 			goto a1;
 		}
+		a = 0;
 		for (short int i = 0; i < DAD_CLASSNAME.size(); i++)
 		{
 			if (CLASS[i] == DAD_CLASSNAME[i])
@@ -687,7 +692,6 @@ void XML::OUTXML_SHUXING(const string DAD_CLASSNAME, const string DAD_ID, const 
 			else
 				a = 0;
 		}
-		cout << a << "\t" << DAD_CLASSNAME.size() << endl;
 		if (a == DAD_CLASSNAME.size())
 		{
 			break;
@@ -702,18 +706,16 @@ void XML::OUTXML_SHUXING(const string DAD_CLASSNAME, const string DAD_ID, const 
 	{
 		goto a1;
 	}
-	for (short int i = 0; i < CLASS.size(); i++) {
+	for (short int i = a; i < CLASS.size(); i++) {
 		if (CLASS[i] == '"') {
 			short int ass = 0;
 			short int i_p = i + 1;
 			for (short int z = 0; z < DAD_ID.size(); z++) {
-				cout << CLASS[i_p] << "\t" << DAD_ID[z] << endl;
 				if (CLASS[i_p] == DAD_ID[z]) {
 					ass++;
 				}
 				else
 				{
-					cout << ass << "\t" << DAD_ID.size() << endl;
 					goto a1;
 				}
 				i_p++;
@@ -766,6 +768,9 @@ void XML::OUTXML_SHUXING(const string DAD_CLASSNAME, const string SHUXINGNAME, c
 		getline(OPEN_IN_OUT, CLASS, '<');
 		getline(OPEN_IN_OUT, CLASS, '>');
 		c++;
+		if (CLASS.size() < DAD_CLASSNAME.size())
+			continue;
+		a = 0;
 		for (short int i = 0; i < DAD_CLASSNAME.size(); i++)
 		{
 			if (CLASS[i] == DAD_CLASSNAME[i])
@@ -833,6 +838,7 @@ void XML::OUTXML_SHUXING(const string DAD_CLASSNAME, const string DAD_ID, const 
 		{
 			goto a1;
 		}
+		a = 0;
 		for (short int i = 0; i < DAD_CLASSNAME.size(); i++)
 		{
 			if (CLASS[i] == DAD_CLASSNAME[i])
@@ -840,7 +846,6 @@ void XML::OUTXML_SHUXING(const string DAD_CLASSNAME, const string DAD_ID, const 
 			else
 				a = 0;
 		}
-		cout << a << "\t" << DAD_CLASSNAME.size() << endl;
 		if (a == DAD_CLASSNAME.size())
 		{
 			break;
@@ -855,18 +860,16 @@ void XML::OUTXML_SHUXING(const string DAD_CLASSNAME, const string DAD_ID, const 
 	{
 		goto a1;
 	}
-	for (short int i = 0; i < CLASS.size(); i++) {
+	for (short int i = a; i < CLASS.size(); i++) {
 		if (CLASS[i] == '"') {
 			short int ass = 0;
 			short int i_p = i + 1;
 			for (short int z = 0; z < DAD_ID.size(); z++) {
-				cout << CLASS[i_p] << "\t" << DAD_ID[z] << endl;
 				if (CLASS[i_p] == DAD_ID[z]) {
 					ass++;
 				}
 				else
 				{
-					cout << ass << "\t" << DAD_ID.size() << endl;
 					goto a1;
 				}
 				i_p++;
@@ -928,9 +931,23 @@ void XML::OUTXML_DELETE(const string YUANNAME)
 			short int OHYES = 0;
 			for (short int i = 0; i < YUANNAME.size(); i++)
 			{
-				if (NAME[i] == YUANNAME[i])
+				if (NAME.size()==YUANNAME.size())
 				{
-					OHYES++;
+					if (NAME[i] == YUANNAME[i] )
+					{
+						OHYES++;
+					}
+				}
+				else if (NAME.size()>YUANNAME.size())
+				{
+					if (NAME[i] == YUANNAME[i] && NAME[YUANNAME.size() + 1] == ' ' )
+					{
+						OHYES++;
+					}
+					else
+					{
+						break;
+					}
 				}
 			}
 			if (OHYES == YUANNAME.size())
@@ -1005,7 +1022,7 @@ void XML::OUTXML_DELETE(const string DAD_CLASSNAME, const string YUANNAME)
 		getline(IN, NAME, '<');
 		getline(IN, NAME, '>');
 		c++;
-		if (NAME>=DAD_CLASSNAME)
+		if (NAME.size() >= DAD_CLASSNAME.size())
 		{
 			int o = 0;
 			for (short int i = 0; i < DAD_CLASSNAME.size(); i++)
@@ -1252,4 +1269,110 @@ void XML::OUTXML_DELETE(const string DAD_CLASSNAME,const string DAD_ID, const st
 	rename("add__LAN.xml", name.c_str());
 	true_OR_false = true;
 }
+//删除离文件头最近的指定编号的内容(元素/类)
+void XML::OUTXML_DELETE_ID(const string YUANNAME, const string YUANNAME_ID)
+{
+	ifstream IN(路径);
+	string NAME;
+	short int c_ = 0;
+	short int c = 0;
+	bool cccc = false;
+	while (!IN.eof())
+	{
+		getline(IN, NAME, '<');
+		getline(IN, NAME, '>');
+		c++;
+		X_1:
+		if (cccc == false)
+		{
+			if (NAME.size() < YUANNAME.size())
+			{
+				continue;
+			}
+			short int OHYES = 0;
+			for (short int i = 0; i < YUANNAME.size(); i++)
+			{
+					if (NAME[i] == YUANNAME[i])
+					{
+						OHYES++;
+					}
+			}
+			if (OHYES == YUANNAME.size())
+			{
+				int zzz = 0;
+				for (short int i = OHYES; i <NAME.size() ; i++)
+				{
+					if (NAME[i]=='"')
+					{
+						for (short int ah = i+1; i < NAME.size(); i++) {
+							if (NAME[i] == YUANNAME_ID[zzz])
+							{
+								zzz++;
+							}
+							if (zzz==YUANNAME_ID.size())
+							{
+								c_ = c;
+								cccc = true;
+								goto X_1;
+							}
+						}
+					}
+				}
+			}
+		}
+		else
+		{
+			if (NAME == '/' + YUANNAME)
+			{
+				break;
+			}
+		}
+	}
+	if (IN.eof())
+	{
+		true_OR_false = false;
+		return;
+	}
+	IN.close();
+	IN.open(路径);
+	short int _c = 0;
+	ofstream OUT;
+	OUT.open(contents_(路径) + "/add__LAN" + ".xml", ios::out);
+	bool xxx = false;
+	while (!IN.eof())
+	{
+		_c++;
+		if (_c - 1 == c)
+		{
+			while (getline(IN, NAME))
+			{
+				OUT << NAME << endl;
+			}
+			break;
+		}
+		if (_c == c_)
+		{
+			xxx = true;
+		}
+		if (getline(IN, NAME, '<')) {
+			if (xxx == false)
+				OUT << NAME << '<';
+		}
+		if (getline(IN, NAME, '>'))
+		{
+			if (xxx == false)
+				OUT << NAME << '>';
+		}
+
+	}
+	OUT.close();
+	IN.close();
+	string name = contents_name(路径);
+	remove(路径.c_str());
+	rename("add__LAN.xml", name.c_str());
+	true_OR_false = true;
+}
+
+
+
 
